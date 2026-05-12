@@ -10,11 +10,16 @@
   },
   "dependencies": {
     "@creit.tech/stellar-wallets-kit": "^2.1.0",
+    "@radix-ui/react-slot": "^1.2.3",
     "@stellar/freighter-api": "^5.0.0",
     "@stellar/stellar-sdk": "^14.1.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.544.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "next": "15.3.1"
+    "next": "15.3.1",
+    "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
     "typescript": "^5",
@@ -23,6 +28,7 @@
     "@types/react-dom": "^19",
     "@tailwindcss/postcss": "^4",
     "tailwindcss": "^4",
+    "tw-animate-css": "^1.3.8",
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
     "@eslint/eslintrc": "^3"
