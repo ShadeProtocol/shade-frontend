@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Buffer } from "buffer";
 import { BadgeCheck, Loader2, WalletCards } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -12,10 +13,6 @@ type WalletSession = {
   challenge: string;
   signature: string;
   signedAt: string;
-};
-
-type SupportedWallet = {
-  id: string;
 };
 
 function createChallenge(address: string) {
@@ -37,6 +34,19 @@ function createChallenge(address: string) {
   ].join("\n");
 }
 
+async function verifySignedMessage(
+  challenge: string,
+  signedMessage: string,
+  signerAddress: string,
+) {
+  const { Keypair } = await import("@stellar/stellar-sdk");
+  const keypair = Keypair.fromPublicKey(signerAddress);
+  const messageBytes = Buffer.from(challenge, "utf8");
+  const signatureBytes = Buffer.from(signedMessage, "base64");
+
+  return keypair.verify(messageBytes, signatureBytes);
+}
+
 export function SignInClient() {
   const [status, setStatus] = useState<AuthStatus>("idle");
   const [error, setError] = useState<string | null>(null);
@@ -55,64 +65,42 @@ export function SignInClient() {
     setStatus("connecting");
 
     try {
-      const {
-        StellarWalletsKit,
-        WalletNetwork,
-        FREIGHTER_ID,
-        allowAllModules,
-        verifyStellarSignature,
-      } = await import("@creit.tech/stellar-wallets-kit");
+      const { StellarWalletsKit, Networks } = await import(
+        "@creit.tech/stellar-wallets-kit"
+      );
+      const { defaultModules } = await import(
+        "@creit.tech/stellar-wallets-kit/modules/utils"
+      );
+      const { FREIGHTER_ID } = await import(
+        "@creit.tech/stellar-wallets-kit/modules/freighter"
+      );
 
-      const kit = new StellarWalletsKit({
-        network: WalletNetwork.TESTNET,
+      StellarWalletsKit.init({
+        network: Networks.TESTNET,
         selectedWalletId: FREIGHTER_ID,
-        modules: allowAllModules(),
+        modules: defaultModules(),
       });
 
-      const address = await new Promise<string>((resolve, reject) => {
-        kit.openModal({
-          modalTitle: "Connect a Stellar wallet",
-          notAvailableText: "This wallet is not available in your browser.",
-          onWalletSelected: async (wallet: SupportedWallet) => {
-            try {
-              await kit.setWallet(wallet.id);
-              const response = await kit.getAddress();
+      const { address } = await StellarWalletsKit.authModal();
 
-              if (!response.address) {
-                reject(
-                  new Error("No wallet address was returned by the wallet."),
-                );
-                return;
-              }
-
-              resolve(response.address);
-            } catch (walletError) {
-              reject(walletError);
-            }
-          },
-          onClosed: (closedError?: Error) => {
-            reject(
-              closedError ??
-                new Error("Wallet connection was cancelled before signing."),
-            );
-          },
-        });
-      });
+      if (!address) {
+        throw new Error("No wallet address was returned by the wallet.");
+      }
 
       const challenge = createChallenge(address);
 
       setStatus("signing");
 
-      const signature = await kit.signMessage(challenge, {
+      const signature = await StellarWalletsKit.signMessage(challenge, {
         address,
-        networkPassphrase: WalletNetwork.TESTNET,
+        networkPassphrase: Networks.TESTNET,
       });
 
       if (!signature.signedMessage) {
         throw new Error("The wallet did not return a signed message.");
       }
 
-      const verified = await verifyStellarSignature(
+      const verified = await verifySignedMessage(
         challenge,
         signature.signedMessage,
         signature.signerAddress ?? address,
