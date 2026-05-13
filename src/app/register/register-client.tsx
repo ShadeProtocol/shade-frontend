@@ -1,6 +1,15 @@
 "use client";
 
-import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
+import {
+  ChangeEvent,
+  ClipboardEvent,
+  FormEvent,
+  KeyboardEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useRouter } from "next/navigation";
 import {
   BadgeCheck,
@@ -83,6 +92,7 @@ function readLogo(file: File) {
 
 export function RegisterClient() {
   const router = useRouter();
+  const otpInputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const [step, setStep] = useState<Step>(1);
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [values, setValues] = useState<FormValues>(initialValues);
@@ -127,6 +137,43 @@ export function RegisterClient() {
       ...currentValues,
       [field]: value,
     }));
+  }
+
+  function updateOtpDigit(index: number, value: string) {
+    const digit = value.replace(/\D/g, "").slice(-1);
+    const nextOtpInput = otpInput.split("");
+    nextOtpInput[index] = digit;
+
+    setError(null);
+    setOtpInput(nextOtpInput.join("").slice(0, 6));
+
+    if (digit && index < 5) {
+      otpInputRefs.current[index + 1]?.focus();
+    }
+  }
+
+  function handleOtpKeyDown(
+    index: number,
+    event: KeyboardEvent<HTMLInputElement>,
+  ) {
+    if (event.key !== "Backspace" || otpInput[index]) {
+      return;
+    }
+
+    otpInputRefs.current[index - 1]?.focus();
+  }
+
+  function handleOtpPaste(event: ClipboardEvent<HTMLInputElement>) {
+    event.preventDefault();
+
+    const pastedCode = event.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, 6);
+
+    setError(null);
+    setOtpInput(pastedCode);
+    otpInputRefs.current[Math.min(pastedCode.length, 5)]?.focus();
   }
 
   async function handleLogoChange(event: ChangeEvent<HTMLInputElement>) {
@@ -372,16 +419,27 @@ export function RegisterClient() {
               </div>
               <label className="grid gap-2 text-sm font-medium">
                 OTP code
-                <input
-                  className="h-12 rounded-md border bg-background px-3 text-center font-mono text-lg tracking-widest outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
-                  inputMode="numeric"
-                  maxLength={6}
-                  value={otpInput}
-                  onChange={(event) =>
-                    setOtpInput(event.target.value.replace(/\D/g, ""))
-                  }
-                  required
-                />
+                <div className="grid grid-cols-6 gap-2">
+                  {Array.from({ length: 6 }).map((_, index) => (
+                    <input
+                      key={index}
+                      ref={(element) => {
+                        otpInputRefs.current[index] = element;
+                      }}
+                      aria-label={`OTP digit ${index + 1}`}
+                      className="h-12 min-w-0 rounded-md border bg-background text-center font-mono text-lg font-semibold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                      inputMode="numeric"
+                      maxLength={1}
+                      value={otpInput[index] ?? ""}
+                      onChange={(event) =>
+                        updateOtpDigit(index, event.target.value)
+                      }
+                      onKeyDown={(event) => handleOtpKeyDown(index, event)}
+                      onPaste={handleOtpPaste}
+                      required
+                    />
+                  ))}
+                </div>
               </label>
             </div>
           ) : null}
