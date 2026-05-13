@@ -77,10 +77,9 @@ npm run format
 
 ## Contributing
 
-1. Create a branch from `dev`.
+1. Create a branch from `main`.
 2. Keep changes focused on one task or bug fix.
 3. Run `npm run typecheck` and `npm run format:check` before opening a pull request.
 4. Fill out the pull request template with a short summary, verification steps, and any notes.
 5. Request review after CI passes.
 
-For now, CI runs TypeScript checking and Prettier format validation on pull requests and pushes to `main` or `dev`.
