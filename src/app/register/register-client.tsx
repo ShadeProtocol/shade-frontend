@@ -102,8 +102,8 @@ export function RegisterClient() {
     if (step === 2) {
       return Boolean(
         values.businessName &&
-          values.businessCategory &&
-          values.businessDescription,
+        values.businessCategory &&
+        values.businessDescription,
       );
     }
 
@@ -263,9 +263,7 @@ export function RegisterClient() {
                 {step === 2 && "Business details"}
                 {step === 3 && "Email verification"}
               </p>
-              <p className="text-sm text-muted-foreground">
-                Step {step} of 3
-              </p>
+              <p className="text-sm text-muted-foreground">Step {step} of 3</p>
             </div>
           </div>
 
