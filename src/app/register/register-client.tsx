@@ -81,6 +81,10 @@ function createOtpCode() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
+function isValidEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim());
+}
+
 function readLogo(file: File) {
   return new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
@@ -106,7 +110,9 @@ export function RegisterClient() {
 
   const canContinue = useMemo(() => {
     if (step === 1) {
-      return Boolean(values.firstName && values.lastName && values.email);
+      return Boolean(
+        values.firstName && values.lastName && isValidEmail(values.email),
+      );
     }
 
     if (step === 2) {
@@ -211,6 +217,11 @@ export function RegisterClient() {
     }
 
     if (step === 1) {
+      if (!isValidEmail(values.email)) {
+        setError("Enter a valid email address before continuing.");
+        return;
+      }
+
       setStep(2);
       return;
     }
@@ -343,6 +354,8 @@ export function RegisterClient() {
                 <input
                   className="h-11 rounded-md border bg-background px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
                   type="email"
+                  inputMode="email"
+                  autoComplete="email"
                   value={values.email}
                   onChange={(event) => updateField("email", event.target.value)}
                   required
@@ -419,7 +432,7 @@ export function RegisterClient() {
               </div>
               <label className="grid gap-2 text-sm font-medium">
                 OTP code
-                <div className="grid grid-cols-6 gap-2">
+                <div className="grid w-fit max-w-full grid-cols-6 gap-2">
                   {Array.from({ length: 6 }).map((_, index) => (
                     <input
                       key={index}
@@ -427,7 +440,7 @@ export function RegisterClient() {
                         otpInputRefs.current[index] = element;
                       }}
                       aria-label={`OTP digit ${index + 1}`}
-                      className="h-12 min-w-0 rounded-md border bg-background text-center font-mono text-lg font-semibold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                      className="size-11 rounded-md border bg-background text-center font-mono text-lg font-semibold outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 sm:size-12"
                       inputMode="numeric"
                       maxLength={1}
                       value={otpInput[index] ?? ""}
