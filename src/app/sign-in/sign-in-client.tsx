@@ -3,8 +3,13 @@
 import { useMemo, useState } from "react";
 import { Buffer } from "buffer";
 import { BadgeCheck, Loader2, WalletCards } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import {
+  getMerchantProfile,
+  MERCHANT_SESSION_KEY,
+} from "@/lib/merchant-storage";
 
 type AuthStatus = "idle" | "connecting" | "signing" | "verified" | "error";
 
@@ -48,6 +53,7 @@ async function verifySignedMessage(
 }
 
 export function SignInClient() {
+  const router = useRouter();
   const [status, setStatus] = useState<AuthStatus>("idle");
   const [error, setError] = useState<string | null>(null);
   const [session, setSession] = useState<WalletSession | null>(null);
@@ -117,12 +123,12 @@ export function SignInClient() {
         signedAt: new Date().toISOString(),
       };
 
-      sessionStorage.setItem(
-        "shade:merchant-session",
-        JSON.stringify(nextSession),
-      );
+      sessionStorage.setItem(MERCHANT_SESSION_KEY, JSON.stringify(nextSession));
       setSession(nextSession);
       setStatus("verified");
+
+      const profile = getMerchantProfile(address);
+      router.push(profile?.emailVerified ? "/dashboard" : "/register");
     } catch (signInError) {
       setStatus("error");
       setError(
