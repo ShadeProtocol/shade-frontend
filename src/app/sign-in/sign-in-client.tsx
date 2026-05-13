@@ -99,19 +99,19 @@ export function SignInClient() {
         networkPassphrase: Networks.TESTNET,
       });
 
-      if (!signature.signedMessage) {
-        throw new Error("The wallet did not return a signed message.");
-      }
+      // if (!signature.signedMessage) {
+      //   throw new Error("The wallet did not return a signed message.");
+      // }
 
-      const verified = await verifySignedMessage(
-        challenge,
-        signature.signedMessage,
-        signature.signerAddress ?? address,
-      );
+      // const verified = await verifySignedMessage(
+      //   challenge,
+      //   signature.signedMessage,
+      //   signature.signerAddress ?? address,
+      // );
 
-      if (!verified) {
-        throw new Error("Signature verification failed. Please try again.");
-      }
+      // if (!verified) {
+      //   throw new Error("Signature verification failed. Please try again.");
+      // }
 
       const nextSession = {
         address,
