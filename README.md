@@ -82,4 +82,3 @@ npm run format
 3. Run `npm run typecheck` and `npm run format:check` before opening a pull request.
 4. Fill out the pull request template with a short summary, verification steps, and any notes.
 5. Request review after CI passes.
-
