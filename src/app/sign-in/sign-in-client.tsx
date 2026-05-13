@@ -71,15 +71,12 @@ export function SignInClient() {
     setStatus("connecting");
 
     try {
-      const { StellarWalletsKit, Networks } = await import(
-        "@creit.tech/stellar-wallets-kit"
-      );
-      const { defaultModules } = await import(
-        "@creit.tech/stellar-wallets-kit/modules/utils"
-      );
-      const { FREIGHTER_ID } = await import(
-        "@creit.tech/stellar-wallets-kit/modules/freighter"
-      );
+      const { StellarWalletsKit, Networks } =
+        await import("@creit.tech/stellar-wallets-kit");
+      const { defaultModules } =
+        await import("@creit.tech/stellar-wallets-kit/modules/utils");
+      const { FREIGHTER_ID } =
+        await import("@creit.tech/stellar-wallets-kit/modules/freighter");
 
       StellarWalletsKit.init({
         network: Networks.TESTNET,
