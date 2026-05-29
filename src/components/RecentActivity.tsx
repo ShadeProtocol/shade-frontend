@@ -8,7 +8,7 @@ export interface RecentActivityProps {
   maxItems?: number;
 }
 
-// Helpers 
+// Helpers
 
 function formatRelativeTime(ts: Date | string): string {
   const date = ts instanceof Date ? ts : new Date(ts);
@@ -218,7 +218,7 @@ function EmptyState() {
   );
 }
 
-// Single row 
+// Single row
 
 function ActivityRow({
   event,
