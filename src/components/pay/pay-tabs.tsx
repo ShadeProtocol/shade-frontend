@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { cn } from "@/lib/utils";
+import { PayManualTransferView } from "./pay-manual-transfer-view";
 import { PayWithConnectedWalletView } from "./pay-with-connected-wallet-view";
 
 type PayTab = "connected-wallet" | "manual-transfer";
@@ -53,9 +54,9 @@ export function PayTabs() {
         id="pay-panel-manual-transfer"
         aria-labelledby="pay-tab-manual-transfer"
         hidden={activeTab !== "manual-transfer"}
-        className="rounded-lg border bg-card p-6 text-sm text-muted-foreground"
+        className="rounded-lg border bg-card p-6"
       >
-        Manual transfer instructions will appear here.
+        <PayManualTransferView />
       </div>
     </div>
   );
