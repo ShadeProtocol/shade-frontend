@@ -7,4 +7,7 @@ export type Invoice = {
   token: string;
   status: InvoiceStatus;
   createdAt: string;
+  payerEmail?: string;
+  expiration?: string;
 };
+

@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Buffer } from "buffer";
 import { BadgeCheck, Loader2, WalletCards } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -39,18 +38,18 @@ function createChallenge(address: string) {
   ].join("\n");
 }
 
-async function verifySignedMessage(
-  challenge: string,
-  signedMessage: string,
-  signerAddress: string,
-) {
-  const { Keypair } = await import("@stellar/stellar-sdk");
-  const keypair = Keypair.fromPublicKey(signerAddress);
-  const messageBytes = Buffer.from(challenge, "utf8");
-  const signatureBytes = Buffer.from(signedMessage, "base64");
-
-  return keypair.verify(messageBytes, signatureBytes);
-}
+// async function verifySignedMessage(
+//   challenge: string,
+//   signedMessage: string,
+//   signerAddress: string,
+// ) {
+//   const { Keypair } = await import("@stellar/stellar-sdk");
+//   const keypair = Keypair.fromPublicKey(signerAddress);
+//   const messageBytes = Buffer.from(challenge, "utf8");
+//   const signatureBytes = Buffer.from(signedMessage, "base64");
+// 
+//   return keypair.verify(messageBytes, signatureBytes);
+// }
 
 export function SignInClient() {
   const router = useRouter();

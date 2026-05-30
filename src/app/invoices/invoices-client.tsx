@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { InvoiceForm } from "@/components/invoice/invoice-form";
+import { InvoiceControls } from "@/components/invoice/invoice-controls";
 import { InvoiceTable } from "@/components/invoice/invoice-table";
 import type { Invoice } from "@/lib/invoice-types";
 
@@ -27,6 +28,34 @@ const seedInvoices: Invoice[] = [
 
 export function InvoicesClient() {
   const [invoices, setInvoices] = useState<Invoice[]>(seedInvoices);
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("all");
+  const [sortBy, setSortBy] = useState("newest");
+
+  const filteredAndSortedInvoices = invoices
+    .filter((invoice) => {
+      const query = search.toLowerCase();
+      const matchesSearch =
+        invoice.referenceId.toLowerCase().includes(query) ||
+        invoice.description.toLowerCase().includes(query);
+      const matchesStatus = status === "all" || invoice.status === status;
+      return matchesSearch && matchesStatus;
+    })
+    .sort((a, b) => {
+      if (sortBy === "newest") {
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      }
+      if (sortBy === "oldest") {
+        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      }
+      if (sortBy === "amount-high") {
+        return Number(b.amount) - Number(a.amount);
+      }
+      if (sortBy === "amount-low") {
+        return Number(a.amount) - Number(b.amount);
+      }
+      return 0;
+    });
 
   return (
     <div className="flex flex-col gap-8">
@@ -35,10 +64,22 @@ export function InvoicesClient() {
           setInvoices((current) => [invoice, ...current])
         }
       />
-      <section className="space-y-3">
-        <h2 className="text-lg font-semibold">Your invoices</h2>
-        <InvoiceTable invoices={invoices} />
+      <section className="space-y-4">
+        <h2 className="text-lg font-semibold text-foreground">Your invoices</h2>
+        <InvoiceControls
+          search={search}
+          onSearchChange={setSearch}
+          status={status}
+          onStatusChange={setStatus}
+          sortBy={sortBy}
+          onSortChange={setSortBy}
+        />
+        <InvoiceTable
+          invoices={filteredAndSortedInvoices}
+          emptyState="No invoices match your search or filter criteria."
+        />
       </section>
     </div>
   );
 }
+
