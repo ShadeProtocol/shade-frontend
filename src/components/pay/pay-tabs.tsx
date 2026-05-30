@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { cn } from "@/lib/utils";
+import { PayManualTransferView } from "./pay-manual-transfer-view";
 import { PayWithConnectedWalletView } from "./pay-with-connected-wallet-view";
 
 type PayTab = "connected-wallet" | "manual-transfer";
@@ -17,7 +18,11 @@ export function PayTabs() {
 
   return (
     <div className="flex w-full max-w-2xl flex-col gap-4">
-      <div role="tablist" aria-label="Payment method" className="flex gap-2 border-b">
+      <div
+        role="tablist"
+        aria-label="Payment method"
+        className="flex gap-2 border-b"
+      >
         {tabs.map(({ id, label }) => (
           <button
             key={id}
@@ -53,9 +58,9 @@ export function PayTabs() {
         id="pay-panel-manual-transfer"
         aria-labelledby="pay-tab-manual-transfer"
         hidden={activeTab !== "manual-transfer"}
-        className="rounded-lg border bg-card p-6 text-sm text-muted-foreground"
+        className="rounded-lg border bg-card p-6"
       >
-        Manual transfer instructions will appear here.
+        <PayManualTransferView />
       </div>
     </div>
   );
