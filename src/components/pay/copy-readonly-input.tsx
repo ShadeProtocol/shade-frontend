@@ -82,12 +82,18 @@ export function CopyReadonlyInput({
           variant="outline"
           onClick={handleCopy}
           aria-label={
-            copied ? `${label} copied to clipboard` : `Copy ${label.toLowerCase()}`
+            copied
+              ? `${label} copied to clipboard`
+              : `Copy ${label.toLowerCase()}`
           }
           aria-live="polite"
           className="shrink-0"
         >
-          {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+          {copied ? (
+            <Check className="h-4 w-4" />
+          ) : (
+            <Copy className="h-4 w-4" />
+          )}
         </Button>
       </div>
       {hint ? <p className="text-xs text-muted-foreground">{hint}</p> : null}
