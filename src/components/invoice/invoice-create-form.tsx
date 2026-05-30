@@ -20,12 +20,14 @@ const initialDraft = {
 
 export type InvoiceCreateFormProps = {
   onSubmit?: (invoice: InvoiceCreateInput) => Promise<void> | void;
+  onDraft?: (draft: typeof initialDraft) => void;
 };
 
-export function InvoiceCreateForm({ onSubmit }: InvoiceCreateFormProps) {
+export function InvoiceCreateForm({ onSubmit, onDraft }: InvoiceCreateFormProps) {
   const [draft, setDraft] = useState(initialDraft);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDrafting, setIsDrafting] = useState(false);
 
   function updateField<K extends keyof typeof initialDraft>(
     field: K,
@@ -39,7 +41,7 @@ export function InvoiceCreateForm({ onSubmit }: InvoiceCreateFormProps) {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (isSubmitting) return;
+    if (isSubmitting || isDrafting) return;
 
     const result = validateInvoiceCreate({
       amount: draft.amount,
@@ -59,6 +61,16 @@ export function InvoiceCreateForm({ onSubmit }: InvoiceCreateFormProps) {
       setDraft(initialDraft);
     } finally {
       setIsSubmitting(false);
+    }
+  }
+
+  function handleSaveDraft() {
+    setIsDrafting(true);
+    setErrors({});
+    try {
+      onDraft?.(draft);
+    } finally {
+      setIsDrafting(false);
     }
   }
 
@@ -139,21 +151,40 @@ export function InvoiceCreateForm({ onSubmit }: InvoiceCreateFormProps) {
         />
       </Field>
 
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-        aria-busy={isSubmitting}
-        className="self-start"
-      >
-        {isSubmitting ? (
-          <>
-            <Loader2 className="animate-spin" aria-hidden />
-            <span>Validating…</span>
-          </>
-        ) : (
-          "Create invoice"
-        )}
-      </Button>
+      <div className="flex flex-wrap gap-3">
+        <Button
+          type="submit"
+          disabled={isSubmitting || isDrafting}
+          aria-busy={isSubmitting}
+          className="self-start"
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="animate-spin" aria-hidden />
+              <span>Validating…</span>
+            </>
+          ) : (
+            "Create invoice"
+          )}
+        </Button>
+
+        <Button
+          type="button"
+          variant="secondary"
+          disabled={isSubmitting || isDrafting}
+          onClick={handleSaveDraft}
+          className="self-start"
+        >
+          {isDrafting ? (
+            <>
+              <Loader2 className="animate-spin" aria-hidden />
+              <span>Saving draft…</span>
+            </>
+          ) : (
+            "Save as draft"
+          )}
+        </Button>
+      </div>
     </form>
   );
 }
