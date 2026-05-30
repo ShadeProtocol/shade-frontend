@@ -47,8 +47,8 @@ export function ManualTransferView({
           </h2>
         </div>
         <p className="text-sm text-muted-foreground">
-          Copy the address and exact amount into your Stellar wallet, send
-          the payment, then tap{" "}
+          Copy the address and exact amount into your Stellar wallet, send the
+          payment, then tap{" "}
           <span className="font-medium text-foreground">
             I have sent the payment
           </span>{" "}

@@ -28,7 +28,10 @@ type Status = "idle" | "verifying" | "verified";
  *
  * See ShadeProtocol/shade-frontend#56.
  */
-export function ConfirmPaymentButton({ onConfirm, disabled }: ConfirmPaymentButtonProps) {
+export function ConfirmPaymentButton({
+  onConfirm,
+  disabled,
+}: ConfirmPaymentButtonProps) {
   const [status, setStatus] = useState<Status>("idle");
 
   async function handleClick() {

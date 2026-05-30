@@ -18,7 +18,11 @@ export function PayTabs() {
 
   return (
     <div className="flex w-full max-w-2xl flex-col gap-4">
-      <div role="tablist" aria-label="Payment method" className="flex gap-2 border-b">
+      <div
+        role="tablist"
+        aria-label="Payment method"
+        className="flex gap-2 border-b"
+      >
         {tabs.map(({ id, label }) => (
           <button
             key={id}

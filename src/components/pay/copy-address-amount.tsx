@@ -135,7 +135,11 @@ function CopyField({ id, label, value, copied, onCopy }: CopyFieldProps) {
             copied && "bg-emerald-50 text-emerald-900",
           )}
         >
-          {copied ? <Check className="size-4" aria-hidden /> : <Copy className="size-4" aria-hidden />}
+          {copied ? (
+            <Check className="size-4" aria-hidden />
+          ) : (
+            <Copy className="size-4" aria-hidden />
+          )}
           <span>{copied ? "Copied" : "Copy"}</span>
         </button>
       </div>
