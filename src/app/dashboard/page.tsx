@@ -1,3 +1,10 @@
+import { DollarSign, FileText, TrendingUp, Users } from "lucide-react";
+
+import { Sidebar } from "@/components/Sidebar";
+import { Topbar } from "@/components/Topbar";
+import { StatCard } from "@/components/StatCard";
+import { DashboardActions } from "./dashboard-actions";
+
 export const metadata = {
   title: "Dashboard | Shade",
   description: "Shade merchant dashboard.",
@@ -5,16 +12,49 @@ export const metadata = {
 
 export default function DashboardPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-6 py-12 text-foreground">
-      <section className="w-full max-w-xl rounded-lg border bg-card p-8 text-center shadow-sm">
-        <p className="text-sm font-semibold uppercase text-primary">
-          Shade merchant
-        </p>
-        <h1 className="mt-3 text-3xl font-bold">Dashboard coming next</h1>
-        <p className="mt-3 text-sm leading-6 text-muted-foreground">
-          Your wallet is verified and your merchant profile is ready.
-        </p>
-      </section>
-    </main>
+    <div className="min-h-screen bg-background">
+      <Sidebar />
+      <Topbar />
+
+      <div className="ml-60 pt-16">
+        <main className="min-h-[calc(100vh-4rem)] overflow-y-auto p-6">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Welcome back. Here&apos;s an overview of your business.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <StatCard
+              title="Total revenue"
+              value="$12,430"
+              icon={<DollarSign className="size-4" />}
+              trend={12.5}
+            />
+            <StatCard
+              title="Active invoices"
+              value="24"
+              icon={<FileText className="size-4" />}
+              trend={-3.2}
+            />
+            <StatCard
+              title="Total customers"
+              value="138"
+              icon={<Users className="size-4" />}
+              trend={8.1}
+            />
+            <StatCard
+              title="Payment volume"
+              value="$9,870"
+              icon={<TrendingUp className="size-4" />}
+              trend={5.4}
+            />
+          </div>
+
+          <DashboardActions />
+        </main>
+      </div>
+    </div>
   );
 }
