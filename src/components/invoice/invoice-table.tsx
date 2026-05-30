@@ -1,21 +1,6 @@
+import { InvoiceStatusBadge } from "@/components/invoice/invoice-status-badge";
 import { cn } from "@/lib/utils";
-import type { Invoice, InvoiceStatus } from "@/lib/invoice-types";
-
-const statusStyles: Record<InvoiceStatus, string> = {
-  draft: "bg-muted text-muted-foreground",
-  pending: "bg-amber-100 text-amber-900",
-  paid: "bg-emerald-100 text-emerald-900",
-  overdue: "bg-rose-100 text-rose-900",
-  cancelled: "bg-zinc-200 text-zinc-700",
-};
-
-const statusLabels: Record<InvoiceStatus, string> = {
-  draft: "Draft",
-  pending: "Pending",
-  paid: "Paid",
-  overdue: "Overdue",
-  cancelled: "Cancelled",
-};
+import type { Invoice } from "@/lib/invoice-types";
 
 function formatCreatedAt(value: string) {
   const date = new Date(value);
@@ -86,14 +71,7 @@ export function InvoiceTable({ invoices, className, emptyState }: InvoiceTablePr
                   <span className="text-muted-foreground">{invoice.token}</span>
                 </td>
                 <td className="px-4 py-3">
-                  <span
-                    className={cn(
-                      "inline-flex rounded-full px-2.5 py-1 text-xs font-medium",
-                      statusStyles[invoice.status],
-                    )}
-                  >
-                    {statusLabels[invoice.status]}
-                  </span>
+                  <InvoiceStatusBadge status={invoice.status} />
                 </td>
                 <td className="px-4 py-3 text-muted-foreground">
                   {formatCreatedAt(invoice.createdAt)}
