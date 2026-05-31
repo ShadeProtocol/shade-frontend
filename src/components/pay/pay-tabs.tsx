@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { cn } from "@/lib/utils";
 import { PayManualTransferView } from "./pay-manual-transfer-view";
+import { PaymentSuccess } from "./payment-success";
 import { PayWithConnectedWalletView } from "./pay-with-connected-wallet-view";
 
 type PayTab = "connected-wallet" | "manual-transfer";
@@ -15,6 +16,20 @@ const tabs: Array<{ id: PayTab; label: string }> = [
 
 export function PayTabs() {
   const [activeTab, setActiveTab] = useState<PayTab>("connected-wallet");
+  const [paid, setPaid] = useState(false);
+
+  async function handleManualPaymentConfirmed() {
+    await new Promise((resolve) => window.setTimeout(resolve, 900));
+    setPaid(true);
+  }
+
+  if (paid) {
+    return (
+      <div className="w-full max-w-2xl">
+        <PaymentSuccess />
+      </div>
+    );
+  }
 
   return (
     <div className="flex w-full max-w-2xl flex-col gap-4">
@@ -60,7 +75,7 @@ export function PayTabs() {
         hidden={activeTab !== "manual-transfer"}
         className="rounded-lg border bg-card p-6"
       >
-        <PayManualTransferView />
+        <PayManualTransferView onConfirmSent={handleManualPaymentConfirmed} />
       </div>
     </div>
   );
