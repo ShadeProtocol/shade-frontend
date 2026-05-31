@@ -1,13 +1,12 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { Loader2 } from "lucide-react";
+import { AlertTriangle, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-import { CopyReadonlyInput } from "./copy-readonly-input";
 import { AddressQRCode } from "./address-qr-code";
-import { AlertTriangle } from "lucide-react";
+import { CopyReadonlyInput } from "./copy-readonly-input";
 
 interface PayManualTransferViewProps {
   /** Stellar address the payment should be sent to. */
@@ -63,7 +62,7 @@ export function PayManualTransferView({
         <div>
           <p className="font-semibold mb-1">Important: Exact Amount Required</p>
           <p>
-            You MUST send the <strong>exact</strong> token amount shown below on the Stellar network. 
+            You must send the <strong>exact</strong> token amount shown below on the Stellar network.
             Sending a different amount or using a different network may result in permanent loss of funds or a failed transaction.
           </p>
         </div>
@@ -75,7 +74,10 @@ export function PayManualTransferView({
           <li>Open your Stellar wallet and paste the address.</li>
           <li>Enter the exact amount and select the correct asset.</li>
           <li>Send the payment.</li>
-          <li>Tap <em>"I have sent the payment"</em> below so Shade can verify it on-chain.</li>
+          <li>
+            Tap <em>I have sent the payment</em> below so Shade can verify it
+            on-chain.
+          </li>
         </ol>
       </div>
 
