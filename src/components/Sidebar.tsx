@@ -3,28 +3,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import {
-  FileText,
-  LayoutDashboard,
-  LogOut,
-  Settings,
-  Users,
-} from "lucide-react";
+import { LogOut } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-
-const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/invoices", label: "Invoices", icon: FileText },
-  { href: "/customers", label: "Customers", icon: Users },
-  { href: "/settings", label: "Settings", icon: Settings },
-];
+import { navItems } from "@/lib/nav-items";
 
 export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-40 flex w-60 flex-col border-r bg-sidebar">
+    <aside className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col border-r bg-sidebar md:flex">
       <div className="flex h-16 shrink-0 items-center gap-2.5 border-b px-5">
         <Image
           src="/shade_logo_transparent.png"
