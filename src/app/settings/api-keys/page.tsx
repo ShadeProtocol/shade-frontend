@@ -1,3 +1,5 @@
+import { ApiKeysClient } from "./api-keys-client";
+
 export const metadata = {
   title: "API Keys · Settings | Shade",
 };
@@ -8,13 +10,12 @@ export default function ApiKeysSettingsPage() {
       <div>
         <h2 className="text-xl font-semibold">API Keys</h2>
         <p className="text-sm text-muted-foreground">
-          Programmatic access for your Shade integration.
+          Programmatic access for your Shade integration. Key values are only
+          shown once at creation and are never listed here.
         </p>
       </div>
-      <p className="text-sm text-muted-foreground">
-        Key generation will land here. You will be able to issue, rotate, and
-        revoke keys used by your server to call Shade.
-      </p>
+      <ApiKeysClient />
     </div>
   );
 }
+
