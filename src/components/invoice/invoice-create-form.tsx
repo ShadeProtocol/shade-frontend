@@ -16,7 +16,17 @@ const initialDraft = {
   amount: "",
   description: "",
   customerEmail: "",
+  expiresAt: "",
 };
+
+/** Today's date as `YYYY-MM-DD`, used as the date picker's `min`. */
+function todayIso(): string {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
 
 export type InvoiceCreateFormProps = {
   onSubmit?: (invoice: InvoiceCreateInput) => Promise<void> | void;
@@ -45,6 +55,7 @@ export function InvoiceCreateForm({ onSubmit }: InvoiceCreateFormProps) {
       amount: draft.amount,
       description: draft.description,
       customerEmail: draft.customerEmail,
+      expiresAt: draft.expiresAt,
     });
 
     if (!result.ok) {
@@ -136,6 +147,26 @@ export function InvoiceCreateForm({ onSubmit }: InvoiceCreateFormProps) {
           disabled={isSubmitting}
           className={inputClass(Boolean(errors.customerEmail))}
           placeholder="customer@example.com"
+        />
+      </Field>
+
+      <Field
+        label="Expiry date (optional)"
+        htmlFor="invoice-expires-at"
+        error={errors.expiresAt}
+      >
+        <input
+          id="invoice-expires-at"
+          type="date"
+          min={todayIso()}
+          aria-invalid={Boolean(errors.expiresAt)}
+          aria-describedby={
+            errors.expiresAt ? "invoice-expires-at-error" : undefined
+          }
+          value={draft.expiresAt}
+          onChange={(event) => updateField("expiresAt", event.target.value)}
+          disabled={isSubmitting}
+          className={inputClass(Boolean(errors.expiresAt))}
         />
       </Field>
 
