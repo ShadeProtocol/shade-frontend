@@ -12,3 +12,12 @@ export type SubscriptionPlan = {
   frequency: SubscriptionFrequency;
   activeSubscribers: number;
 };
+
+export type SubscriberStatus = "active" | "past_due";
+
+export type Subscriber = {
+  id: string;
+  walletAddress: string;
+  startDate: string;
+  status: SubscriberStatus;
+};

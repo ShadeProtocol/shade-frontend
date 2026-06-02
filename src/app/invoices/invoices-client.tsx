@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { InvoiceForm } from "@/components/invoice/invoice-form";
 import { InvoiceControls } from "@/components/invoice/invoice-controls";
 import { InvoiceTable } from "@/components/invoice/invoice-table";
+import { InvoicePagination } from "@/components/invoice/invoice-pagination";
 import type { Invoice } from "@/lib/invoice-types";
+
+const PAGE_SIZE = 10;
 
 const seedInvoices: Invoice[] = [
   {
@@ -31,6 +34,7 @@ export function InvoicesClient() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
+  const [page, setPage] = useState(1);
 
   const filteredAndSortedInvoices = invoices
     .filter((invoice) => {
@@ -57,6 +61,22 @@ export function InvoicesClient() {
       return 0;
     });
 
+  const pageCount = Math.max(
+    1,
+    Math.ceil(filteredAndSortedInvoices.length / PAGE_SIZE),
+  );
+
+  // Reset to the first page whenever the result set changes so we never land
+  // on a page that no longer exists (e.g. after filtering down the list).
+  useEffect(() => {
+    setPage(1);
+  }, [search, status, sortBy, filteredAndSortedInvoices.length]);
+
+  const paginatedInvoices = filteredAndSortedInvoices.slice(
+    (page - 1) * PAGE_SIZE,
+    page * PAGE_SIZE,
+  );
+
   return (
     <div className="flex flex-col gap-8">
       <InvoiceForm
@@ -75,9 +95,16 @@ export function InvoicesClient() {
           onSortChange={setSortBy}
         />
         <InvoiceTable
-          invoices={filteredAndSortedInvoices}
+          invoices={paginatedInvoices}
           emptyState="No invoices match your search or filter criteria."
         />
+        {filteredAndSortedInvoices.length > 0 && (
+          <InvoicePagination
+            page={page}
+            pageCount={pageCount}
+            onPageChange={setPage}
+          />
+        )}
       </section>
     </div>
   );

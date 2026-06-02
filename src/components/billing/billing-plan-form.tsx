@@ -6,33 +6,27 @@ import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
-  type InvoiceCreateInput,
-  validateInvoiceCreate,
-} from "@/lib/invoice-schema";
+  billingIntervals,
+  billingIntervalLabels,
+  type BillingPlanCreateInput,
+  validateBillingPlanCreate,
+} from "@/lib/billing-plan-schema";
 
-type FieldErrors = Partial<Record<keyof InvoiceCreateInput, string>>;
+type FieldErrors = Partial<Record<keyof BillingPlanCreateInput, string>>;
 
 const initialDraft = {
+  name: "",
   amount: "",
+  interval: "monthly",
   description: "",
   customerEmail: "",
-  expiresAt: "",
 };
 
-/** Today's date as `YYYY-MM-DD`, used as the date picker's `min`. */
-function todayIso(): string {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
-export type InvoiceCreateFormProps = {
-  onSubmit?: (invoice: InvoiceCreateInput) => Promise<void> | void;
+export type BillingPlanFormProps = {
+  onSubmit?: (plan: BillingPlanCreateInput) => Promise<void> | void;
 };
 
-export function InvoiceCreateForm({ onSubmit }: InvoiceCreateFormProps) {
+export function BillingPlanForm({ onSubmit }: BillingPlanFormProps) {
   const [draft, setDraft] = useState(initialDraft);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -42,7 +36,7 @@ export function InvoiceCreateForm({ onSubmit }: InvoiceCreateFormProps) {
     value: string,
   ) {
     setDraft((current) => ({ ...current, [field]: value }));
-    if (errors[field as keyof InvoiceCreateInput]) {
+    if (errors[field as keyof BillingPlanCreateInput]) {
       setErrors((current) => ({ ...current, [field]: undefined }));
     }
   }
@@ -51,11 +45,12 @@ export function InvoiceCreateForm({ onSubmit }: InvoiceCreateFormProps) {
     event.preventDefault();
     if (isSubmitting) return;
 
-    const result = validateInvoiceCreate({
+    const result = validateBillingPlanCreate({
+      name: draft.name,
       amount: draft.amount,
+      interval: draft.interval,
       description: draft.description,
       customerEmail: draft.customerEmail,
-      expiresAt: draft.expiresAt,
     });
 
     if (!result.ok) {
@@ -80,45 +75,59 @@ export function InvoiceCreateForm({ onSubmit }: InvoiceCreateFormProps) {
       className="flex w-full max-w-xl flex-col gap-5 rounded-lg border bg-card p-6 shadow-sm"
     >
       <div className="space-y-1">
-        <h2 className="text-xl font-semibold">Create invoice</h2>
+        <h2 className="text-xl font-semibold">Create billing plan</h2>
         <p className="text-sm text-muted-foreground">
-          Validate every field before pushing on-chain.
+          Define a recurring charge. Validate every field before activating
+          the plan.
         </p>
       </div>
 
+      <Field label="Plan name" htmlFor="plan-name" error={errors.name}>
+        <input
+          id="plan-name"
+          type="text"
+          required
+          aria-invalid={Boolean(errors.name)}
+          aria-describedby={errors.name ? "plan-name-error" : undefined}
+          value={draft.name}
+          onChange={(event) => updateField("name", event.target.value)}
+          disabled={isSubmitting}
+          className={inputClass(Boolean(errors.name))}
+          placeholder="e.g. Pro membership"
+        />
+      </Field>
+
       <Field
         label="Description"
-        htmlFor="invoice-description"
+        htmlFor="plan-description"
         error={errors.description}
       >
         <textarea
-          id="invoice-description"
+          id="plan-description"
           rows={3}
           required
           aria-invalid={Boolean(errors.description)}
           aria-describedby={
-            errors.description ? "invoice-description-error" : undefined
+            errors.description ? "plan-description-error" : undefined
           }
           value={draft.description}
           onChange={(event) => updateField("description", event.target.value)}
           disabled={isSubmitting}
           className={inputClass(Boolean(errors.description))}
-          placeholder="What is this invoice for?"
+          placeholder="What does this plan cover?"
         />
       </Field>
 
-      <Field label="Amount" htmlFor="invoice-amount" error={errors.amount}>
+      <Field label="Amount" htmlFor="plan-amount" error={errors.amount}>
         <input
-          id="invoice-amount"
+          id="plan-amount"
           type="number"
           inputMode="decimal"
           min="0"
           step="0.01"
           required
           aria-invalid={Boolean(errors.amount)}
-          aria-describedby={
-            errors.amount ? "invoice-amount-error" : undefined
-          }
+          aria-describedby={errors.amount ? "plan-amount-error" : undefined}
           value={draft.amount}
           onChange={(event) => updateField("amount", event.target.value)}
           disabled={isSubmitting}
@@ -128,17 +137,42 @@ export function InvoiceCreateForm({ onSubmit }: InvoiceCreateFormProps) {
       </Field>
 
       <Field
+        label="Billing interval"
+        htmlFor="plan-interval"
+        error={errors.interval}
+      >
+        <select
+          id="plan-interval"
+          required
+          aria-invalid={Boolean(errors.interval)}
+          aria-describedby={
+            errors.interval ? "plan-interval-error" : undefined
+          }
+          value={draft.interval}
+          onChange={(event) => updateField("interval", event.target.value)}
+          disabled={isSubmitting}
+          className={inputClass(Boolean(errors.interval))}
+        >
+          {billingIntervals.map((interval) => (
+            <option key={interval} value={interval}>
+              {billingIntervalLabels[interval]}
+            </option>
+          ))}
+        </select>
+      </Field>
+
+      <Field
         label="Customer email (optional)"
-        htmlFor="invoice-customer-email"
+        htmlFor="plan-customer-email"
         error={errors.customerEmail}
       >
         <input
-          id="invoice-customer-email"
+          id="plan-customer-email"
           type="email"
           autoComplete="email"
           aria-invalid={Boolean(errors.customerEmail)}
           aria-describedby={
-            errors.customerEmail ? "invoice-customer-email-error" : undefined
+            errors.customerEmail ? "plan-customer-email-error" : undefined
           }
           value={draft.customerEmail}
           onChange={(event) =>
@@ -147,26 +181,6 @@ export function InvoiceCreateForm({ onSubmit }: InvoiceCreateFormProps) {
           disabled={isSubmitting}
           className={inputClass(Boolean(errors.customerEmail))}
           placeholder="customer@example.com"
-        />
-      </Field>
-
-      <Field
-        label="Expiry date (optional)"
-        htmlFor="invoice-expires-at"
-        error={errors.expiresAt}
-      >
-        <input
-          id="invoice-expires-at"
-          type="date"
-          min={todayIso()}
-          aria-invalid={Boolean(errors.expiresAt)}
-          aria-describedby={
-            errors.expiresAt ? "invoice-expires-at-error" : undefined
-          }
-          value={draft.expiresAt}
-          onChange={(event) => updateField("expiresAt", event.target.value)}
-          disabled={isSubmitting}
-          className={inputClass(Boolean(errors.expiresAt))}
         />
       </Field>
 
@@ -182,7 +196,7 @@ export function InvoiceCreateForm({ onSubmit }: InvoiceCreateFormProps) {
             <span>Validating…</span>
           </>
         ) : (
-          "Create invoice"
+          "Create plan"
         )}
       </Button>
     </form>
