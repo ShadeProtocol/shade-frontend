@@ -58,7 +58,7 @@ export function PayManualTransferView({
     <div className="flex flex-col gap-6">
       <div className="rounded-md border border-dashed bg-muted/30 p-4 text-sm text-muted-foreground">
         Send the exact amount below from your wallet to the address shown. Once
-        you've broadcast the transfer, tap <em>"I have sent the payment"</em> so
+        you have broadcast the transfer, tap <em>I have sent the payment</em> so
         Shade can start watching the chain for it.
       </div>
 
