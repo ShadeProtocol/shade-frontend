@@ -1,3 +1,4 @@
+import { ApiKeyManagement } from "@/components/dashboard/api-key-management";
 import { DollarSign, FileText, TrendingUp, Users } from "lucide-react";
 
 import { Sidebar } from "@/components/Sidebar";
