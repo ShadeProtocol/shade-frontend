@@ -37,7 +37,12 @@ export function InvoiceToolsClient() {
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
       <section className="space-y-3">
         <h2 className="text-lg font-semibold">Create invoice (with validation)</h2>
-        <InvoiceCreateForm />
+        <InvoiceCreateForm
+          onDraft={(draft) => {
+            console.log("Draft saved:", draft);
+            alert(`Draft saved for: ${draft.description || "unnamed invoice"}`);
+          }}
+        />
       </section>
 
       <section className="space-y-3">

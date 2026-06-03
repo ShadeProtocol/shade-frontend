@@ -10,6 +10,20 @@
 
 import { z } from "zod";
 
+/**
+ * Today's date as a `YYYY-MM-DD` string in the local timezone. The
+ * native `<input type="date">` emits dates in this format, so we
+ * compare lexicographically rather than constructing `Date` objects
+ * (which would drag UTC/timezone offsets into the comparison).
+ */
+function todayIso(): string {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 export const invoiceCreateSchema = z.object({
   amount: z
     .coerce
@@ -23,6 +37,16 @@ export const invoiceCreateSchema = z.object({
     .string()
     .trim()
     .email("Enter a valid email address")
+    .optional()
+    .or(z.literal("").transform(() => undefined)),
+  // Optional expiry. Native date inputs yield `YYYY-MM-DD`; the
+  // refinement rejects any date earlier than today so an invoice
+  // cannot be created already-expired.
+  expiresAt: z
+    .string()
+    .trim()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Enter a valid date")
+    .refine((value) => value >= todayIso(), "Expiry date cannot be in the past")
     .optional()
     .or(z.literal("").transform(() => undefined)),
 });
