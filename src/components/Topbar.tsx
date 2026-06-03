@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Moon, Sun, Wallet } from "lucide-react";
 
+import { MobileNav } from "@/components/MobileNav";
 import { useTheme } from "@/components/ThemeProvider";
 import { getMerchantSessionAddress } from "@/lib/merchant-storage";
 
@@ -20,8 +21,10 @@ export function Topbar() {
   }, []);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-30 ml-60 flex h-16 items-center justify-between border-b bg-background px-6">
-      <div />
+    <header className="fixed inset-x-0 top-0 z-30 ml-0 flex h-16 items-center justify-between border-b bg-background px-6 md:ml-60">
+      <div className="flex items-center">
+        <MobileNav />
+      </div>
 
       <div className="flex items-center gap-3">
         {walletAddress ? (

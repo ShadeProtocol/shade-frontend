@@ -10,7 +10,7 @@ export default function DashboardLayout({
     <div className="min-h-screen bg-background">
       <Sidebar />
       <Topbar />
-      <div className="ml-60 pt-16">
+      <div className="ml-0 pt-16 md:ml-60">
         <main className="min-h-[calc(100vh-4rem)] overflow-y-auto p-6">
           {children}
         </main>
