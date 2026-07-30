@@ -22,6 +22,8 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   getMerchantSessionAddress,
   saveMerchantProfile,
@@ -327,32 +329,32 @@ export function RegisterClient() {
 
           {step === 1 ? (
             <div className="grid gap-4 sm:grid-cols-2">
-              <label className="grid gap-2 text-sm font-medium">
-                First name
-                <input
-                  className="h-11 rounded-md border bg-background px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+              <div className="grid gap-2">
+                <Label htmlFor="firstName">First name</Label>
+                <Input
+                  id="firstName"
                   value={values.firstName}
                   onChange={(event) =>
                     updateField("firstName", event.target.value)
                   }
                   required
                 />
-              </label>
-              <label className="grid gap-2 text-sm font-medium">
-                Last name
-                <input
-                  className="h-11 rounded-md border bg-background px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="lastName">Last name</Label>
+                <Input
+                  id="lastName"
                   value={values.lastName}
                   onChange={(event) =>
                     updateField("lastName", event.target.value)
                   }
                   required
                 />
-              </label>
-              <label className="grid gap-2 text-sm font-medium sm:col-span-2">
-                Email address
-                <input
-                  className="h-11 rounded-md border bg-background px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+              </div>
+              <div className="grid gap-2 sm:col-span-2">
+                <Label htmlFor="email">Email address</Label>
+                <Input
+                  id="email"
                   type="email"
                   inputMode="email"
                   autoComplete="email"
@@ -360,23 +362,23 @@ export function RegisterClient() {
                   onChange={(event) => updateField("email", event.target.value)}
                   required
                 />
-              </label>
+              </div>
             </div>
           ) : null}
 
           {step === 2 ? (
             <div className="grid gap-4">
-              <label className="grid gap-2 text-sm font-medium">
-                Business name
-                <input
-                  className="h-11 rounded-md border bg-background px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+              <div className="grid gap-2">
+                <Label htmlFor="businessName">Business name</Label>
+                <Input
+                  id="businessName"
                   value={values.businessName}
                   onChange={(event) =>
                     updateField("businessName", event.target.value)
                   }
                   required
                 />
-              </label>
+              </div>
               <label className="grid gap-2 text-sm font-medium">
                 Business logo
                 <input
