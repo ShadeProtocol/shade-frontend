@@ -391,6 +391,11 @@ export function RegisterClient() {
                   }
                   required
                 />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="lastName">Last name</Label>
+                <Input
+                  id="lastName"
               </label>
               <label className="grid gap-2 text-sm font-medium">
                 Last name
@@ -401,6 +406,11 @@ export function RegisterClient() {
                   }
                   required
                 />
+              </div>
+              <div className="grid gap-2 sm:col-span-2">
+                <Label htmlFor="email">Email address</Label>
+                <Input
+                  id="email"
               </label>
               <label className="grid gap-2 text-sm font-medium sm:col-span-2">
                 Email address
@@ -412,23 +422,23 @@ export function RegisterClient() {
                   onChange={(event) => updateField("email", event.target.value)}
                   required
                 />
-              </label>
+              </div>
             </div>
           ) : null}
 
           {step === 2 ? (
             <div className="grid gap-4">
-              <label className="grid gap-2 text-sm font-medium">
-                Business name
-                <input
-                  className="h-11 rounded-md border bg-background px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+              <div className="grid gap-2">
+                <Label htmlFor="businessName">Business name</Label>
+                <Input
+                  id="businessName"
                   value={values.businessName}
                   onChange={(event) =>
                     updateField("businessName", event.target.value)
                   }
                   required
                 />
-              </label>
+              </div>
               <label className="grid gap-2 text-sm font-medium">
                 Business logo
                 <input
