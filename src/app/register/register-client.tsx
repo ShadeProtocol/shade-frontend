@@ -20,6 +20,7 @@ import {
   UserRound,
 } from "lucide-react";
 
+import { LoadingButton } from "@/components/loading-button";
 import { FormErrorBanner } from "@/components/form-error-banner";
 import { Stepper } from "@/components/stepper";
 import { Button } from "@/components/ui/button";
@@ -586,6 +587,27 @@ export function RegisterClient() {
               Back
             </Button>
 
+            {step < 3 ? (
+              <LoadingButton
+                type="button"
+                onClick={goNext}
+                disabled={!canContinue}
+                isLoading={isSending}
+              >
+                Continue
+                <ChevronRight />
+              </LoadingButton>
+            ) : (
+              <LoadingButton
+                type="submit"
+                disabled={!canContinue || isComplete}
+                icon={isComplete ? <BadgeCheck /> : <MailCheck />}
+              >
+                Verify email
+              </LoadingButton>
+            )}
+          </div>
+        </form>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-between">
               <Button
                 type="button"

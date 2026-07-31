@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { Check, Copy } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { notify } from "@/lib/toast";
+import { useClipboard } from "@/hooks/use-clipboard";
 
 interface CopyAddressAmountProps {
   address: string;
@@ -12,88 +12,27 @@ interface CopyAddressAmountProps {
   amountAssetCode?: string;
 }
 
-type CopyField = "address" | "amount";
-
 /**
  * Read-only display of the destination address and amount for a manual
  * transfer, each with a copy-to-clipboard icon. The user copies these
  * into their external Stellar wallet to complete the payment.
- *
- * The copy implementation prefers the async Clipboard API and falls back
- * to an offscreen textarea + execCommand("copy") so it still works in
- * non-secure (HTTP) contexts, embedded webviews, and older browsers.
- *
- * See ShadeProtocol/shade-frontend#55.
  */
 export function CopyAddressAmount({
   address,
   amount,
   amountAssetCode = "XLM",
 }: CopyAddressAmountProps) {
-  const [copied, setCopied] = useState<CopyField | null>(null);
-
-  async function copyToClipboard(value: string): Promise<boolean> {
-    if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
-      try {
-        await navigator.clipboard.writeText(value);
-        return true;
-      } catch {
-        // Fall through to the execCommand fallback below — common in
-        // non-secure contexts where navigator.clipboard rejects.
-      }
-    }
-
-    if (typeof document === "undefined") return false;
-    const textarea = document.createElement("textarea");
-    textarea.value = value;
-    textarea.setAttribute("readonly", "");
-    textarea.style.position = "fixed";
-    textarea.style.top = "0";
-    textarea.style.left = "0";
-    textarea.style.opacity = "0";
-    document.body.appendChild(textarea);
-    textarea.select();
-    let ok = false;
-    try {
-      ok = document.execCommand("copy");
-    } catch {
-      ok = false;
-    }
-    document.body.removeChild(textarea);
-    return ok;
-  }
-
-  async function handleCopy(field: CopyField, value: string, label: string) {
-    const ok = await copyToClipboard(value);
-    if (ok) {
-      setCopied(field);
-      notify.success(`${label} copied`);
-      window.setTimeout(() => {
-        setCopied((current) => (current === field ? null : current));
-      }, 1500);
-    } else {
-      notify.error(
-        `Could not copy ${label.toLowerCase()}`,
-        "Long-press the field to copy it manually.",
-      );
-    }
-  }
-
   return (
     <div className="flex flex-col gap-4">
       <CopyField
         id="manual-transfer-address"
         label="Address"
         value={address}
-        copied={copied === "address"}
-        onCopy={() => handleCopy("address", address, "Address")}
       />
       <CopyField
         id="manual-transfer-amount"
         label={`Amount (${amountAssetCode})`}
         value={amount}
-        copied={copied === "amount"}
-        onCopy={() => handleCopy("amount", amount, "Amount")}
       />
     </div>
   );
@@ -103,11 +42,23 @@ interface CopyFieldProps {
   id: string;
   label: string;
   value: string;
-  copied: boolean;
-  onCopy: () => void;
 }
 
-function CopyField({ id, label, value, copied, onCopy }: CopyFieldProps) {
+function CopyField({ id, label, value }: CopyFieldProps) {
+  const { isCopied: copied, copy } = useClipboard(1500);
+
+  async function handleCopy() {
+    const ok = await copy(value);
+    if (ok) {
+      notify.success(`${label} copied`);
+    } else {
+      notify.error(
+        `Could not copy ${label.toLowerCase()}`,
+        "Long-press the field to copy it manually.",
+      );
+    }
+  }
+
   return (
     <div className="flex flex-col gap-1.5">
       <label htmlFor={id} className="text-xs font-medium text-muted-foreground">
@@ -125,7 +76,7 @@ function CopyField({ id, label, value, copied, onCopy }: CopyFieldProps) {
         />
         <button
           type="button"
-          onClick={onCopy}
+          onClick={handleCopy}
           aria-label={`Copy ${label.toLowerCase()}`}
           aria-pressed={copied}
           className={cn(

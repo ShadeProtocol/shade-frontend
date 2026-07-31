@@ -1,5 +1,10 @@
 "use client";
 
+import { useMemo, useState } from "react";
+import { BadgeCheck, WalletCards } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+import { LoadingButton } from "@/components/loading-button";
 import { BadgeCheck, WalletCards } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -105,6 +110,15 @@ export function SignInClient() {
             </div>
           ) : null}
 
+          <LoadingButton
+            className="w-full"
+            size="lg"
+            onClick={handleSignIn}
+            isLoading={status === "connecting" || status === "signing"}
+            icon={status === "verified" ? <BadgeCheck /> : <WalletCards />}
+          >
+            {buttonLabel}
+          </LoadingButton>
           <WalletConnectButton status={status} onClick={handleSignIn} />
         </div>
       </section>
