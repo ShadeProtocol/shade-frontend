@@ -1,10 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { BadgeCheck, Loader2, WalletCards } from "lucide-react";
+import { BadgeCheck, WalletCards } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-import { Button } from "@/components/ui/button";
+import { LoadingButton } from "@/components/loading-button";
 import {
   getMerchantProfile,
   MERCHANT_SESSION_KEY,
@@ -167,21 +167,15 @@ export function SignInClient() {
             </div>
           ) : null}
 
-          <Button
+          <LoadingButton
             className="w-full"
             size="lg"
             onClick={handleSignIn}
-            disabled={status === "connecting" || status === "signing"}
+            isLoading={status === "connecting" || status === "signing"}
+            icon={status === "verified" ? <BadgeCheck /> : <WalletCards />}
           >
-            {status === "connecting" || status === "signing" ? (
-              <Loader2 className="animate-spin" />
-            ) : status === "verified" ? (
-              <BadgeCheck />
-            ) : (
-              <WalletCards />
-            )}
             {buttonLabel}
-          </Button>
+          </LoadingButton>
         </div>
       </section>
     </main>

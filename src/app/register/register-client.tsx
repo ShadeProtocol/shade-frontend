@@ -21,6 +21,7 @@ import {
   UserRound,
 } from "lucide-react";
 
+import { LoadingButton } from "@/components/loading-button";
 import { Button } from "@/components/ui/button";
 import {
   getMerchantSessionAddress,
@@ -475,20 +476,23 @@ export function RegisterClient() {
             </Button>
 
             {step < 3 ? (
-              <Button
+              <LoadingButton
                 type="button"
                 onClick={goNext}
-                disabled={!canContinue || isSending}
+                disabled={!canContinue}
+                isLoading={isSending}
               >
-                {isSending ? <Loader2 className="animate-spin" /> : null}
                 Continue
                 <ChevronRight />
-              </Button>
+              </LoadingButton>
             ) : (
-              <Button type="submit" disabled={!canContinue || isComplete}>
-                {isComplete ? <BadgeCheck /> : <MailCheck />}
+              <LoadingButton
+                type="submit"
+                disabled={!canContinue || isComplete}
+                icon={isComplete ? <BadgeCheck /> : <MailCheck />}
+              >
                 Verify email
-              </Button>
+              </LoadingButton>
             )}
           </div>
         </form>
