@@ -1,24 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Moon, Sun } from "lucide-react";
 import { Moon, Sun, Wallet } from "lucide-react";
 
+import { DisconnectWalletMenu } from "@/components/disconnect-wallet-menu";
 import { MobileNav } from "@/components/MobileNav";
 import { useTheme } from "@/components/ThemeProvider";
 import { getMerchantSessionAddress } from "@/lib/merchant-storage";
-
-function truncateAddress(address: string): string {
-  if (address.length <= 10) return address;
-  return `${address.slice(0, 4)}...${address.slice(-4)}`;
-}
+import { WalletAddressBadge } from "@/components/wallet-address-badge";
+import { useMerchantSession } from "@/hooks/use-merchant-session";
 
 export function Topbar() {
   const { isDark, toggleTheme } = useTheme();
-  const [walletAddress, setWalletAddress] = useState<string | null>(null);
-
-  useEffect(() => {
-    setWalletAddress(getMerchantSessionAddress());
-  }, []);
+  const { address: walletAddress } = useMerchantSession();
 
   return (
     <header className="fixed inset-x-0 top-0 z-30 ml-0 flex h-16 items-center justify-between border-b bg-background px-6 md:ml-60">
@@ -28,11 +23,13 @@ export function Topbar() {
 
       <div className="flex items-center gap-3">
         {walletAddress ? (
-          <div className="flex items-center gap-2 rounded-md border bg-secondary/60 px-3 py-1.5">
+          <DisconnectWalletMenu walletAddress={walletAddress} />
+          <div className="flex items-center gap-2">
             <Wallet className="size-3.5 shrink-0 text-muted-foreground" />
-            <span className="font-mono text-xs font-medium text-secondary-foreground">
-              {truncateAddress(walletAddress)}
-            </span>
+            <WalletAddressBadge
+              address={walletAddress}
+              className="bg-secondary/60 font-medium text-secondary-foreground"
+            />
           </div>
         ) : null}
 

@@ -28,6 +28,13 @@ export function ApiKeyReveal({
   const handleCopy = async () => {
     await copy(apiKey);
     toast.success("API key copied to clipboard!");
+    try {
+      await navigator.clipboard.writeText(apiKey);
+      setCopied(true);
+      toast.success("API key copied to clipboard!");
+    } catch {
+      toast.error("Failed to copy API key.");
+    }
   };
 
   return (

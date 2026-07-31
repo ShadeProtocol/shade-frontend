@@ -445,6 +445,34 @@ export function RefreshCw(props: IconProps) {
   );
 }
 
+export function RotateCcw(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M3 2v6h6" />
+      <path d="M3.5 13a9 9 0 1 0 2.6-6.4L3 8" />
+    </IconBase>
+  );
+}
+
+export function Compass(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <circle cx="12" cy="12" r="10" />
+      <path d="m16.2 7.8-2.9 6.5-6.5 2.9 2.9-6.5 6.5-2.9Z" />
+    </IconBase>
+  );
+}
+
+export function LogIn(props: IconProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+      <path d="m10 17 5-5-5-5" />
+      <path d="M15 12H3" />
+    </IconBase>
+  );
+}
+
 export function Settings(props: IconProps) {
   return (
     <IconBase {...props}>

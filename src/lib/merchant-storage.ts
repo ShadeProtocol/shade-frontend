@@ -45,3 +45,7 @@ export function getMerchantSessionAddress() {
     return null;
   }
 }
+
+export function clearMerchantSession() {
+  sessionStorage.removeItem(MERCHANT_SESSION_KEY);
+}
