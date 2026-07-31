@@ -13,7 +13,7 @@ import { Loader2 } from "lucide-react";
 
 // Mock API service to fetch invoice by ID
 const fetchMockInvoice = async (id: string): Promise<InvoiceData> => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       if (id === "invalid") {
         resolve({

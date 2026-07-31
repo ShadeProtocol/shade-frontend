@@ -29,7 +29,7 @@ export function ApiKeyReveal({
       await navigator.clipboard.writeText(apiKey);
       setCopied(true);
       toast.success("API key copied to clipboard!");
-    } catch (error) {
+    } catch {
       toast.error("Failed to copy API key.");
     }
   };

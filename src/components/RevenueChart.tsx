@@ -10,6 +10,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+import { Card } from "@/components/ui/card";
+
 export interface RevenueDataPoint {
   date: string;
   amount: number;
@@ -58,7 +60,7 @@ interface RevenueChartProps {
 
 export default function RevenueChart({ data = MOCK_DATA }: RevenueChartProps) {
   return (
-    <div className="rounded-lg border bg-card p-6 shadow-sm">
+    <Card>
       <h2 className="mb-4 text-lg font-bold text-card-foreground">
         Revenue Over Time
       </h2>
@@ -106,6 +108,6 @@ export default function RevenueChart({ data = MOCK_DATA }: RevenueChartProps) {
           />
         </AreaChart>
       </ResponsiveContainer>
-    </div>
+    </Card>
   );
 }
