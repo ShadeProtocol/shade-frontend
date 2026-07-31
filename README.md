@@ -1,7 +1,7 @@
 # Shade DApp Frontend
 
 The **Shade DApp Frontend** is the user interface for interacting with the Shade decentralized payment gateway. It allows merchants and customers to manage and process crypto payments through a simple, wallet-connected web application.
-
+jjn
 The frontend connects directly to the Shade smart contracts and backend services to enable invoice creation, payment processing, and real-time transaction updates.
 
 ## Features
