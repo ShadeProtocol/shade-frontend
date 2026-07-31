@@ -79,7 +79,7 @@ describe("ProfileDetailsForm", () => {
 
     expect(screen.getByRole("button", { name: "Saving..." })).toBeDisabled();
 
-    // @ts-ignore - resolveSubmit is assigned synchronously in the mock
+    // @ts-expect-error - resolveSubmit is assigned synchronously in the mock
     resolveSubmit();
 
     await waitFor(() => {
