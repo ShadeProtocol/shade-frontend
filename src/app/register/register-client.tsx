@@ -56,6 +56,64 @@ const initialValues: FormValues = {
   businessDescription: "",
 };
 
+/**
+ * The business logo is a base64 data URL and can be megabytes large, so it is
+ * left out of the draft to stay well inside the sessionStorage quota.
+ */
+type DraftValues = Omit<FormValues, "businessLogo">;
+
+type RegistrationDraft = {
+  step: Step;
+  values: DraftValues;
+};
+
+const draftFields: Array<keyof DraftValues> = [
+  "firstName",
+  "lastName",
+  "email",
+  "businessName",
+  "businessCategory",
+  "businessDescription",
+];
+
+function parseRegistrationDraft(value: unknown): RegistrationDraft | null {
+  if (typeof value !== "object" || value === null) {
+    return null;
+  }
+
+  const candidate = value as {
+    step?: unknown;
+    values?: Record<string, unknown>;
+  };
+
+  if (typeof candidate.values !== "object" || candidate.values === null) {
+    return null;
+  }
+
+  const values: DraftValues = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    businessName: "",
+    businessCategory: "",
+    businessDescription: "",
+  };
+
+  for (const field of draftFields) {
+    const fieldValue = candidate.values[field];
+
+    if (typeof fieldValue === "string") {
+      values[field] = fieldValue;
+    }
+  }
+
+  // Step 3 depends on an OTP that is only issued during the current attempt,
+  // so a restored draft never resumes past the business details step.
+  const step: Step = candidate.step === 2 ? 2 : 1;
+
+  return { step, values };
+}
+
 const categories = [
   "E-commerce",
   "SaaS",
@@ -265,6 +323,7 @@ export function RegisterClient() {
       createdAt: new Date().toISOString(),
     });
 
+    clearDraft();
     setIsComplete(true);
     router.push("/dashboard");
   }
