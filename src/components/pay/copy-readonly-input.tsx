@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useId, useRef } from "react";
 import { Check, Copy } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useClipboard } from "@/hooks/use-clipboard";
 
 interface CopyReadonlyInputProps {
   /** Visible label rendered above the input. */
@@ -36,30 +37,10 @@ export function CopyReadonlyInput({
   const generatedId = useId();
   const fieldId = id ?? generatedId;
   const inputRef = useRef<HTMLInputElement>(null);
-  const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    if (!copied) return;
-    const t = window.setTimeout(() => setCopied(false), 1500);
-    return () => window.clearTimeout(t);
-  }, [copied]);
+  const { isCopied: copied, copy } = useClipboard(1500);
 
   async function handleCopy() {
-    // Prefer the async clipboard API; fall back to selecting + execCommand
-    // for environments (older Safari, insecure contexts) where it's
-    // unavailable.
-    try {
-      if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(value);
-      } else if (inputRef.current) {
-        inputRef.current.select();
-        document.execCommand("copy");
-        inputRef.current.setSelectionRange(0, 0);
-      }
-      setCopied(true);
-    } catch {
-      // Silently fail — user can still select + ⌘C manually.
-    }
+    await copy(value);
   }
 
   return (

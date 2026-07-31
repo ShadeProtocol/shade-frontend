@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { Check, Copy, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+
+import { useClipboard } from "@/hooks/use-clipboard";
 
 type ShareInvoiceModalProps = {
   invoiceId: string;
@@ -16,13 +17,11 @@ export function ShareInvoiceModal({
   isOpen,
   onClose,
 }: ShareInvoiceModalProps) {
-  const [copied, setCopied] = useState(false);
+  const { isCopied: copied, copy } = useClipboard();
   const url = `https://shade.app/pay/${invoiceId}`;
 
   async function handleCopy() {
-    await navigator.clipboard.writeText(url);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    await copy(url);
   }
 
   if (!isOpen) return null;

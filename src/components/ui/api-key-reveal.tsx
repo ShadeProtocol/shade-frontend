@@ -2,6 +2,7 @@ import * as React from "react";
 import { ClipboardCopy, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { useClipboard } from "@/hooks/use-clipboard";
 
 interface ApiKeyRevealProps {
   /**
@@ -22,16 +23,11 @@ export function ApiKeyReveal({
   apiKey,
   warningMessage = "Please copy this key now. It will not be shown again.",
 }: ApiKeyRevealProps) {
-  const [copied, setCopied] = React.useState(false);
+  const { isCopied: copied, copy } = useClipboard();
 
   const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(apiKey);
-      setCopied(true);
-      toast.success("API key copied to clipboard!");
-    } catch (error) {
-      toast.error("Failed to copy API key.");
-    }
+    await copy(apiKey);
+    toast.success("API key copied to clipboard!");
   };
 
   return (
@@ -44,7 +40,7 @@ export function ApiKeyReveal({
     >
       {/* Dismiss icon – in a real flow you might hide the component after copy */}
       <button
-        onClick={() => setCopied(true)}
+        type="button"
         aria-label="Dismiss"
         className={cn(
           "absolute top-2 right-2 rounded-full p-1 hover:bg-yellow-200/50 transition-colors",
